@@ -93,7 +93,7 @@ export default function Experience() {
       <Environment preset="city" />
       {/* <color args={["skyblue"]} attach="background" /> */}
 
-      {/* <OrbitControls makeDefault /> */}
+      {window.innerWidth < 600 && <OrbitControls makeDefault />}
 
       <PresentationControls
         global
