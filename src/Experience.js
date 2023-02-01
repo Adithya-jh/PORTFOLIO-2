@@ -13,7 +13,7 @@ import {
 // import { RectAreaLight } from "three";
 
 import { Debug, RigidBody, Physics } from "@react-three/rapier";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRef } from "react";
 
 export default function Experience() {
@@ -62,17 +62,45 @@ export default function Experience() {
     action2.play();
   });
 
+  const [rot, setRot] = useState(null);
+
+  useEffect(() => {
+    const handleResize = () => {
+      const newRot = window.innerWidth < 600 ? -0.8 : null;
+      setRot(newRot);
+    };
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
+  const [scale, setScale] = useState(null);
+
+  useEffect(() => {
+    const handleResize = () => {
+      const newScale = window.innerWidth < 600 ? 2 : null;
+      setScale(newScale);
+    };
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
   return (
     <>
       <Environment preset="city" />
-      <color args={["skyblue"]} attach="background" />
+      {/* <color args={["skyblue"]} attach="background" /> */}
 
       {/* <OrbitControls makeDefault /> */}
 
       <PresentationControls
         global
         rotation={[0.13, 0.1, 0]}
-        polar={[-0.4, 0.2]}
+        // rotation={[0.13, 0.1, 0]}
+        polar={[0, 0]}
+        // polar={[-0.4, 0.2]}
         azimuth={[-1, 0.75]}
         config={{ mass: 2, tensions: 400 }}
         snap={{ mass: 2, tensions: 400 }}
@@ -90,9 +118,13 @@ export default function Experience() {
           <Physics>
             <RigidBody type="fixed" ref={lapRef} colliders="hull">
               <primitive
+                wrapperClass="mobileSize"
                 object={laptop.scene}
+                // position-z={-1.2}
                 position-y={-1.2}
-                onClick={lapRot}
+                rotation-y={rot}
+                // scale={[scale, scale, scale]}
+                // onClick={lapRot}
               >
                 <Html
                   transform
