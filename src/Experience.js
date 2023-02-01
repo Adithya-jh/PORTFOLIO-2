@@ -7,14 +7,60 @@ import {
   ContactShadows,
   Html,
   Text,
+  useAnimations,
   //   rectAreaLight,
 } from "@react-three/drei";
 // import { RectAreaLight } from "three";
+
+import { Debug, RigidBody, Physics } from "@react-three/rapier";
+import { useEffect } from "react";
+import { useRef } from "react";
 
 export default function Experience() {
   const laptop = useGLTF(
     "https://vazxmixjsiawhamofees.supabase.co/storage/v1/object/public/models/macbook/model.gltf"
   );
+  const tree = useGLTF(
+    "https://vazxmixjsiawhamofees.supabase.co/storage/v1/object/public/models/tree-beech/model.gltf"
+  );
+  const cromLech = useGLTF(
+    // "https://vazxmixjsiawhamofees.supabase.co/storage/v1/object/public/models/cromlech/model.gltf"
+    "https://vazxmixjsiawhamofees.supabase.co/storage/v1/object/public/models/cromlech/model.gltf"
+  );
+  const Korrigan = useGLTF(
+    // "https://vazxmixjsiawhamofees.supabase.co/storage/v1/object/public/models/cromlech/model.gltf"
+    "https://vazxmixjsiawhamofees.supabase.co/storage/v1/object/public/models/druid/model.gltf"
+  );
+
+  const KorriganOnWall = useGLTF(
+    // "https://vazxmixjsiawhamofees.supabase.co/storage/v1/object/public/models/cromlech/model.gltf"
+    "https://vazxmixjsiawhamofees.supabase.co/storage/v1/object/public/models/young-korrigan/model.gltf"
+  );
+
+  const LightPost = useGLTF(
+    // "https://vazxmixjsiawhamofees.supabase.co/storage/v1/object/public/models/cromlech/model.gltf"
+    "https://vazxmixjsiawhamofees.supabase.co/storage/v1/object/public/models/lamp-post/model.gltf",
+    { Waiting: true }
+  );
+
+  const lapRef = useRef();
+
+  const lapRot = () => {
+    lapRef.current.applyTorqueImpulse({ x: 0, y: 1, z: 0 });
+  };
+
+  const KorriganAnimation = useAnimations(Korrigan.animations, Korrigan.scene);
+  const KorriganonWallAnimation = useAnimations(
+    KorriganOnWall.animations,
+    KorriganOnWall.scene
+  );
+
+  useEffect(() => {
+    const action1 = KorriganAnimation.actions.Waiting;
+    const action2 = KorriganonWallAnimation.actions.pose_jeune;
+    action1.play();
+    action2.play();
+  });
 
   return (
     <>
@@ -41,17 +87,67 @@ export default function Experience() {
             position={[0, 0.55, -1.15]}
           />
 
-          <primitive object={laptop.scene} position-y={-1.2}>
-            <Html
-              transform
-              wrapperClass="htmlScreen"
-              distanceFactor={1.17}
-              position={[0, 1.56, -1.4]}
-              rotation-x={-0.256}
-            >
-              <iframe src="https://jayahari-adi.vercel.app/" />
-            </Html>
-          </primitive>
+          <Physics>
+            <RigidBody type="fixed" ref={lapRef} colliders="hull">
+              <primitive
+                object={laptop.scene}
+                position-y={-1.2}
+                onClick={lapRot}
+              >
+                <Html
+                  transform
+                  wrapperClass="htmlScreen"
+                  distanceFactor={1.17}
+                  position={[0, 1.56, -1.4]}
+                  rotation-x={-0.256}
+                >
+                  <iframe src="https://jayahari-adi.vercel.app/" />
+                </Html>
+              </primitive>
+            </RigidBody>
+          </Physics>
+
+          <primitive
+            object={tree.scene}
+            scale={[0.1, 0.1, 0.1]}
+            position-x={-3.0}
+            position-y={-1.0}
+          ></primitive>
+
+          <primitive
+            object={cromLech.scene}
+            scale={[0.1, 0.1, 0.1]}
+            position-x={0.0}
+            position-y={-1.0}
+          ></primitive>
+
+          {/* <primitive
+            object={LightPost.scene}
+            scale={[1, 1, 1]}
+            position-x={0.0}
+            position-y={0.0}
+            // {"pose_vieux":true}
+          ></primitive> */}
+
+          <primitive
+            object={Korrigan.scene}
+            scale={[1, 1, 1]}
+            position-x={1.0}
+            position-y={-0.7}
+            position-z={0.6}
+            // {"pose_vieux":true}
+            // {"Waiting":true}
+          ></primitive>
+
+          <primitive
+            object={KorriganOnWall.scene}
+            scale={[1.5, 1.5, 1.5]}
+            position-x={-2.5}
+            position-y={-0.2}
+            position-z={0.2}
+            // {"pose_vieux":true}
+            // {"Waiting":true}
+          ></primitive>
 
           <Text
             font="./bangers-v20-latin-regular.woff"
